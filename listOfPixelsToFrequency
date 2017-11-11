@@ -9,7 +9,7 @@
         
         //takes a list of lists or list of tuples in the form [rgb(), rbg()] or [rgba(), rgba()]
         function arrayToAverage(listOfPixels){
-            if (listOfPixels[0].length == 4 || listOfPixels[0].length == 3){
+            if (listOfPixels[0].length === 4 || listOfPixels[0].length === 3){
                 for (i = 0; i < listOfPixels.length; i++){
                     redTotal += listOfPixels[i][0]
                 }
