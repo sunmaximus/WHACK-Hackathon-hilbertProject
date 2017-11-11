@@ -2,30 +2,48 @@ import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
 
+import cat from './cat.jpg'
+
 const img = new Image();
+img.crossOrigin = 'anonymous';
+// img.src = cat
 
 class App extends Component {
   constructor(props) {
     super(props);
 
-    this.state = { x: 0, y: 0 };
+    this.state = { img: null, arrayOfPixels: [] };
   }
 
   componentWillMount() {
-    img.src = 'https://mdn.mozillademos.org/files/5397/rhino.jpg'
+    img.src = cat
   }
 
   componentDidMount() {
-    this.updateCanvas();
+    const ctx = this.refs.canvas.getContext('2d');
+    ctx.drawImage(img, 0, 0);
+    img.style.display = 'none';
+
+    const self = this;
+
+    function pick(event) {
+      var x = event.layerX;
+      var y = event.layerY;
+      var pixel = ctx.getImageData(x, y, 5, 5);
+      var data = pixel.data;
+      var rgba = 'rgba(' + data[0] + ', ' + data[1] +
+                 ', ' + data[2] + ', ' + (data[3] / 255) + ')';
+
+      // self.setState({ arrayOfPixels: [...self.state.arrayOfPixels, [ data[0], data[1], data[2], (data[3] / 255)] ] })
+
+      console.log(rgba)
+    }
+    this.refs.canvas.addEventListener('mousemove', e => pick(e));
   }
 
   'https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial/Pixel_manipulation_with_canvas'
   'https://blog.lavrton.com/using-react-with-html5-canvas-871d07d8d753'
-  updateCanvas() {
-    const ctx = this.refs.canvas.getContext('2d');
-    ctx.drawImage(img, 0, 0);
-    img.style.display = 'none';
-  }  
+ 
 
   render() {
     const { x, y } = this.state; 
