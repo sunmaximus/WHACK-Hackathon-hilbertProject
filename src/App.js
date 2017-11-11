@@ -2,20 +2,19 @@ import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
 
-import cat from './cat.jpg'
+import cat from './cat.png'
 
 const img = new Image();
-img.crossOrigin = 'anonymous';
-// img.src = cat
 
 class App extends Component {
   constructor(props) {
     super(props);
 
-    this.state = { img: null, arrayOfPixels: [] };
+    this.state = { arrayOfPixels: [] };
   }
-
+  
   componentWillMount() {
+    img.crossOrigin = 'anonymous';    
     img.src = cat
   }
 
@@ -26,12 +25,12 @@ class App extends Component {
 
     const self = this;
 
-    function pick(event) {
-      var x = event.layerX;
-      var y = event.layerY;
-      var pixel = ctx.getImageData(x, y, 5, 5);
-      var data = pixel.data;
-      var rgba = 'rgba(' + data[0] + ', ' + data[1] +
+    const pick = (event) => {
+      let x = event.layerX;
+      let y = event.layerY;
+      let pixel = ctx.getImageData(x, y, 5, 5);
+      let data = pixel.data;
+      let rgba = 'rgba(' + data[0] + ', ' + data[1] +
                  ', ' + data[2] + ', ' + (data[3] / 255) + ')';
 
       // self.setState({ arrayOfPixels: [...self.state.arrayOfPixels, [ data[0], data[1], data[2], (data[3] / 255)] ] })
@@ -46,7 +45,9 @@ class App extends Component {
  
 
   render() {
-    const { x, y } = this.state; 
+    // const { x, y } = this.state; 
+    // img.src = cat;
+    
     return (
       <div className="App">
         <header className="App-header">
@@ -57,7 +58,7 @@ class App extends Component {
           To get started, edit <code>src/App.js</code> and save to reload.
         </p>
         
-        <canvas ref="canvas" width={300} height={300}/>
+        <canvas ref="canvas" width='500' height='500' />
 
         {/* <canvas id="myCanvas" width="200" height="100"
           style={{border: '1px solid #000000'}}>
