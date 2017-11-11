@@ -12,11 +12,7 @@
             if (listOfPixels[0].length === 4 || listOfPixels[0].length === 3){
                 for (i = 0; i < listOfPixels.length; i++){
                     redTotal += listOfPixels[i][0]
-                }
-                for (i = 0; i < listOfPixels.length; i++){
                     blueTotal += listOfPixels[i][1]
-                }
-                for (i = 0; i < listOfPixels.length; i++){
                     greenTotal += listOfPixels[i][2]
                 }
                 multipliedTotal = redTotal/listOfPixels.length*blueTotal/listOfPixels.length*greenTotal/listOfPixels.length
