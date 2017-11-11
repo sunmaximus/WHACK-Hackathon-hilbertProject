@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <script type="text/javascript">
+        
+        
+        //takes a list of lists or list of tuples in the form [rgb(), rbg()] or [rgba(), rgba()]
+        function arrayToAverage(listOfPixels){
+            if (listOfPixels[0].length == 4 || listOfPixels[0].length == 3){
+                for (i = 0; i < listOfPixels.length; i++){
+                    redTotal += listOfPixels[i][0]
+                }
+                for (i = 0; i < listOfPixels.length; i++){
+                    blueTotal += listOfPixels[i][1]
+                }
+                for (i = 0; i < listOfPixels.length; i++){
+                    greenTotal += listOfPixels[i][2]
+                }
+                multipliedTotal = redTotal/listOfPixels.length*blueTotal/listOfPixels.length*greenTotal/listOfPixels.length
+                //scale it to range of (200, 800)
+                return multipliedTotal/(256*256*256) + 200
+            }
+            
+            else{
+                window.alert("bad list of pixels");
+                return 0
+            }
+        }
+            
+        }
+        
+        }
+    </script>
+    
+    </head>
+</html>
