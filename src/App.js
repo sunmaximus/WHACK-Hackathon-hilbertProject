@@ -2,9 +2,24 @@ import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
 
-import cat from './cat.png'
+import cat from './cat.svg';
+import mountain from './ll.jpg';
 
 const img = new Image();
+
+// These are solutions
+// Problems:
+//    1. Need Canvas to draw from an image
+//    2. Call Refs from the virtual Dom manipulation
+//    3. Forgot to add img.onload()
+/********************************************************************************************************************************/
+// 'https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial/Pixel_manipulation_with_canvas'
+// 'https://blog.lavrton.com/using-react-with-html5-canvas-871d07d8d753'
+// 'https://www.google.com/search?q=canvas+wont+draw+jpg&oq=canvas+wont+draw+jpg&aqs=chrome..69i57.8304j0j7&sourceid=chrome&ie=UTF-8'
+// 'https://stackoverflow.com/questions/25272889/html5-canvas-image-file-wont-display-on-canvas'
+// https://reactjs.org/docs/refs-and-the-dom.html
+/********************************************************************************************************************************/
+
 
 class App extends Component {
   constructor(props) {
@@ -15,20 +30,24 @@ class App extends Component {
   
   componentWillMount() {
     img.crossOrigin = 'anonymous';    
-    img.src = cat
+    img.src = mountain;
   }
 
   componentDidMount() {
     const ctx = this.refs.canvas.getContext('2d');
-    ctx.drawImage(img, 0, 0);
-    img.style.display = 'none';
+    // important need or else it won't work. 
+    img.onload = () => {
+      ctx.drawImage(img, 0, 0);
+      img.style.display = 'none';
+    }
+
 
     const self = this;
 
     const pick = (event) => {
       let x = event.layerX;
       let y = event.layerY;
-      let pixel = ctx.getImageData(x, y, 5, 5);
+      let pixel = ctx.getImageData(x, y, 1, 1);
       let data = pixel.data;
       let rgba = 'rgba(' + data[0] + ', ' + data[1] +
                  ', ' + data[2] + ', ' + (data[3] / 255) + ')';
@@ -37,17 +56,10 @@ class App extends Component {
 
       console.log(rgba)
     }
-    this.refs.canvas.addEventListener('mousemove', e => pick(e));
+    this.refs.canvas.addEventListener('mousemove', (event) => pick(event));
   }
 
-  'https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial/Pixel_manipulation_with_canvas'
-  'https://blog.lavrton.com/using-react-with-html5-canvas-871d07d8d753'
- 
-
   render() {
-    // const { x, y } = this.state; 
-    // img.src = cat;
-    
     return (
       <div className="App">
         <header className="App-header">
@@ -57,14 +69,9 @@ class App extends Component {
         <p className="App-intro">
           To get started, edit <code>src/App.js</code> and save to reload.
         </p>
-        
-        <canvas ref="canvas" width='500' height='500' />
-
-        {/* <canvas id="myCanvas" width="200" height="100"
-          style={{border: '1px solid #000000'}}>
-        </canvas> */}
-
-
+        <div style={{ display: 'place', justifyContent: 'center', alignItems: 'center'}}>
+          <canvas ref="canvas" width='600' height='600' style={{ border: '2px solid blue' }}/>
+        </div>
       </div>
     );
   }
