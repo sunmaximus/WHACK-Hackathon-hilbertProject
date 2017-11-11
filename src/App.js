@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
 
-let img = new Image();
+const img = new Image();
 
 class App extends Component {
   constructor(props) {
@@ -22,9 +22,7 @@ class App extends Component {
   'https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial/Pixel_manipulation_with_canvas'
   'https://blog.lavrton.com/using-react-with-html5-canvas-871d07d8d753'
   updateCanvas() {
-
-    console.log(this.myCanvas.getContext('2d'))
-    const ctx = this.myCanvas.getContext('2d');
+    const ctx = this.refs.canvas.getContext('2d');
     ctx.drawImage(img, 0, 0);
     img.style.display = 'none';
   }  
@@ -41,7 +39,7 @@ class App extends Component {
           To get started, edit <code>src/App.js</code> and save to reload.
         </p>
         
-        <canvas ref={(canvas) => { this.myCanvas = canvas; }} width={300} height={300}/>
+        <canvas ref="canvas" width={300} height={300}/>
 
         {/* <canvas id="myCanvas" width="200" height="100"
           style={{border: '1px solid #000000'}}>
