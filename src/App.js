@@ -49,8 +49,7 @@ class App extends Component {
       let y = event.layerY;
       let pixel = ctx.getImageData(x, y, 1, 1);
       let data = pixel.data;
-      let rgba = 'rgba(' + data[0] + ', ' + data[1] +
-                 ', ' + data[2] + ', ' + (data[3] / 255) + ')';
+      let rgba = `rgba(${data[0]}, ${data[1]}, ${data[2]}, ${(data[3] / 255)})`
 
       // self.setState({ arrayOfPixels: [...self.state.arrayOfPixels, [ data[0], data[1], data[2], (data[3] / 255)] ] })
 
