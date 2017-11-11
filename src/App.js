@@ -52,7 +52,6 @@ class App extends Component {
       let rgba = `rgba(${data[0]}, ${data[1]}, ${data[2]}, ${(data[3] / 255)})`
 
       // self.setState({ arrayOfPixels: [...self.state.arrayOfPixels, [ data[0], data[1], data[2], (data[3] / 255)] ] })
-
       console.log(rgba)
     }
     this.refs.canvas.addEventListener('mousemove', (event) => pick(event));
