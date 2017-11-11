@@ -17,7 +17,7 @@
                 }
                 multipliedTotal = redTotal/listOfPixels.length*blueTotal/listOfPixels.length*greenTotal/listOfPixels.length
                 //scale it to range of (200, 800)
-                return multipliedTotal/(256*256*256) + 200
+                return (multipliedTotal/(256*256*256))*600 + 200
             }
             
             else{
