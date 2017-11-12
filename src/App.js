@@ -25,12 +25,14 @@ class App extends Component {
   constructor(props) {
     super(props);
 
-    this.state = { arrayOfPixels: [] };
+    this.state = { arrayOfPixels: [], imageHeight: 0, imageWidth: 0 };
   }
   
   componentWillMount() {
     img.crossOrigin = 'anonymous';    
     img.src = mountain;
+
+    this.setState({ imageHeight: img.height, imageWidth: img.width})
   }
 
   componentDidMount() {
@@ -58,6 +60,7 @@ class App extends Component {
   }
 
   render() {
+    console.log(this.state.imageHeight, this.state.imageWidth)
     return (
       <div className="App">
         <header className="App-header">
@@ -68,7 +71,7 @@ class App extends Component {
           To get started, edit <code>src/App.js</code> and save to reload.
         </p>
         <div style={{ display: 'place', justifyContent: 'center', alignItems: 'center'}}>
-          <canvas ref="canvas" width='600' height='600' style={{ border: '2px solid blue' }}/>
+          <canvas ref="canvas" width={this.state.imageWidth} height={this.state.imageHeight} style={{ border: '2px solid blue' }}/>
         </div>
       </div>
     );
