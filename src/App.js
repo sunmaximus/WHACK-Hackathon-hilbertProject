@@ -9,7 +9,6 @@ import { Line } from 'react-chartjs-2';
 
 import './styles/app.css'
 
-
 const img = new Image();
 // img.crossOrigin = 'anonymous';    
 // img.src = mountain;
@@ -52,7 +51,8 @@ class App extends Component {
     const ctx = this.refs.canvas.getContext('2d');
     // important need or else it won't work. 
     img.onload = () => {
-      this.setState({ imageHeight: img.height, imageWidth: img.width, isMajor: true, isMinnor: false })
+      
+      this.setState({ imageHeight: img.height < 250 ? img.height : img.height/2, imageWidth: img.width < 250 ? img.width : img.width/2, isMajor: true, isMinnor: false })
       ctx.drawImage(img, 0, 0);
       img.style.display = 'none';
     }
@@ -199,7 +199,7 @@ class App extends Component {
     return (
       <div>
           <div className='custom-title-container'>Hilbert Project</div>
-
+          
           <div className='custom-picture-container'>
             <div className='left'>
               <canvas ref="canvas" width={imageWidth === 0 ? 0 : imageWidth} height={imageHeight === 0 ? 0 : imageHeight}/>
