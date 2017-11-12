@@ -4,6 +4,11 @@ import './App.css';
 
 import cat from './cat.svg';
 import mountain from './ll.jpg';
+import red from './red.jpg';
+import { Checkbox } from 'semantic-ui-react'
+
+import './styles/app.css'
+
 
 const img = new Image();
 
@@ -24,14 +29,14 @@ class App extends Component {
   constructor(props) {
     super(props);
 
-    this.state = { arrayOfPixels: [], imageHeight: 0, imageWidth: 0 };
+    this.state = { arrayOfPixels: [], imageHeight: 0, imageWidth: 0, rgba: 'rgba(0, 0, 0, 0)' };
   }
   
   componentWillMount() {
     img.crossOrigin = 'anonymous';    
     img.src = mountain;
 
-    this.setState({ imageHeight: img.height, imageWidth: img.width})
+    this.setState({ imageHeight: img.height, imageWidth: img.width, isMajor: true, isMinnor: false })
   }
 
   componentDidMount() {
@@ -42,22 +47,26 @@ class App extends Component {
       img.style.display = 'none';
     }
 
+    const self = this;
+
     const pick = (event) => {
       let x = event.layerX;
       let y = event.layerY;
-      let pixel = ctx.getImageData(x, y, 1, 1);
+      let pixel = ctx.getImageData(x, y, 10, 10);
       let data = pixel.data;
       let rgba = `rgba(${data[0]}, ${data[1]}, ${data[2]}, ${(data[3] / 255)})`
+      // console.log(rgba)
 
       // self.setState({ arrayOfPixels: [...self.state.arrayOfPixels, [ data[0], data[1], data[2], (data[3] / 255)] ] })
       console.log([ data[0], data[1], data[2], (data[3] / 255) ])
+
+      self.setState({ rgba })
       return [data[0], data[1], data[2]]
 
-      // console.log(rgba)
     }
     // this.refs.canvas.addEventListener('mousemove', (event) => pick(event));
       //global variable soundOn, context, o 
-      var soundOn = false
+      // var soundOn = false
       var contexts = []
       var oscillators = []
      // var gains = []
@@ -84,13 +93,13 @@ class App extends Component {
       //o.type = "sine"
       
       //returns a frequency between 200 and 800 Hz, and takes an rgba tuple/list/array
-        function scaleToFrequency(rgba){
+      const scaleToFrequency = (rgba) => {
           var multipliedTotal = rgba[0] * rgba[1] * rgba[2]
           return (multipliedTotal/(255*255*255))*600 + 200 
       }
       
       //takes a frequency and plays a sound, returns the AudioContext() object so that it can be stopped later
-      function playSound(frequency){
+      const playSound = (frequency) => {
           /*for (i = 0; i < 6; i++){
               oscillators[i].frequency.value = frequency*(i+1)
               gains[i].gain.value = pianoGains[i]
@@ -105,7 +114,7 @@ class App extends Component {
           contexts[2].resume()
       }
       
-      function stopSound(){
+      const stopSound = () => {
         for (let i = 0; i < 3; i++){
             contexts[i].suspend()
 
@@ -115,39 +124,54 @@ class App extends Component {
         }
     }
       
-      function mouseDown(evt){
+      const mouseDown = (evt) => {
           //toggle soundOn 
-          soundOn = (soundOn) ? false : true;
-          if (soundOn){
-              mouseMove(evt)
-          }
-          else{
-              stopSound()
-          }
+          // soundOn = (soundOn) ? false : true;
+
+          console.log('figuring out what is wrong', evt)
+          if (evt.type === 'mouseout') return stopSound();
+
+          return mouseMove(evt)
           console.log("In Mouse Down")
-          
       }
       
       
-      function mouseMove(evt){
+      const mouseMove = (evt) => {
           //pick(evt) returns an rgba tuple, scale changes it to a frequency, and play plays that frequency
           playSound(scaleToFrequency(pick(evt)))
           console.log("In Mouse Move")
           //compose(play(), scale(), pick(evt))
+          if (self.state.isMajor){
+            playSound(scaleToFrequency(pick(evt)), 5/4)
+            console.log('isMajor')
+          }
+          else{
+            console.log('isMinnor')
+            playSound(scaleToFrequency(pick(evt)), 6/5)
+          }
       }
       
-      
       //event handlers
-      this.refs.canvas.addEventListener('mousedown', (event) => mouseDown(event))
-      this.refs.canvas.addEventListener('mousemove', (event) => mouseMove(event))
-  }
+      this.refs.canvas.addEventListener('mouseout', (event) => mouseDown(event))
+      this.refs.canvas.addEventListener('mouseover', (event) => mouseMove(event))
+  }0
 
   render() {
     // console.log(this.state.imageHeight, this.state.imageWidth)
+    const { imageWidth, imageHeight, rgba, isMajor, isMinnor } = this.state;
     return (
       <div>
-        <div style={{ display: 'place', justifyContent: 'center', alignItems: 'center'}}>
-          <canvas ref="canvas" width={this.state.imageWidth} height={this.state.imageHeight} style={{ border: '2px solid blue' }}/>
+        <div className='custom-picture-container'>
+          <div className='left'>
+            <canvas ref="canvas" width={imageWidth === 0 ? `300` : imageWidth} height={imageHeight === 0 ? `300` : imageHeight}/>
+          </div>
+          <div className='right' >
+            <div style={{ width: imageWidth === 0 ? `${300/2}px` : imageWidth, height: imageHeight === 0 ? `${300/2}px` : imageHeight/2, backgroundColor: rgba }}>
+              {this.state.rgba}
+            </div>
+            <Checkbox checked={isMajor} onClick={() => this.setState({ isMajor: (isMajor ? false : true)})} label='Major' type='radio' />
+            <Checkbox checked={!isMajor} onClick={() => this.setState({ isMajor: !isMajor ? true : false })} label='Minnor' type='radio' />
+          </div>
         </div>
       </div>
     );

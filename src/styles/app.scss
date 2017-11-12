@@ -1,0 +1,17 @@
+div.custom-picture-container {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    justify-content: center;
+    margin-top: 20px;
+    .right {
+        align-items: center;
+        margin: 20px;
+    }
+    .left {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 20px;
+    }
+}
