@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
-
 import cat from './cat.svg';
 import mountain from './ll.jpg';
 import red from './red.jpg';
-import { Checkbox } from 'semantic-ui-react'
+import { Checkbox, Container } from 'semantic-ui-react'
+import { Line } from 'react-chartjs-2';
+
+// import Chart from 'chart.js';
 
 import './styles/app.css'
 
@@ -31,7 +31,15 @@ class App extends Component {
   constructor(props) {
     super(props);
 
-    this.state = { arrayOfPixels: [], imageHeight: 0, imageWidth: 0, rgba: 'rgba(0, 0, 0, 0)' };
+    this.state = { 
+      arrayOfPixels: [], 
+      imageHeight: 0, 
+      imageWidth: 0, 
+      rgba: 'rgba(0, 0, 0, 0)',
+      pixelCounter: 0,
+      xAxis: Array.apply(null, Array(180)).map(function (_, i) {return i*3.14/180;}),
+      yAxis: []
+    };
   }
   
   componentWillMount() {
@@ -58,7 +66,7 @@ class App extends Component {
       // console.log(rgba)
 
       // self.setState({ arrayOfPixels: [...self.state.arrayOfPixels, [ data[0], data[1], data[2], (data[3] / 255)] ] })
-      console.log([ data[0], data[1], data[2], (data[3] / 255) ])
+      // console.log([ data[0], data[1], data[2], (data[3] / 255) ])
 
       self.setState({ rgba })
       return [data[0], data[1], data[2]]
@@ -109,9 +117,19 @@ class App extends Component {
         oscillators[1].frequency.value = frequency*5/4
         oscillators[2].frequency.value = frequency*3/2
 
+        // console.log('frequency', frequency)
+
+        if (self.state.yAxis.length === self.state.xAxis.length) {
+          self.setState({ yAxis: [...self.state.yAxis.splice(1), Math.sin(2 * Math.PI * frequency)]})
+        } else {
+          self.setState({ yAxis: [...self.state.yAxis, Math.sin(2 * Math.PI * frequency)]})          
+        }
+
         contexts[0].resume()
         contexts[1].resume()
         contexts[2].resume()
+
+        self.setState({ pixelCounter: self.state.pixelCounter + 1 })
       }
       
       const stopSound = () => {
@@ -132,7 +150,7 @@ class App extends Component {
       else{
           stopSound()
       }
-      console.log("In Mouse Down")
+      // console.log("In Mouse Down")
       
         // if (evt.type === 'mouseout') return stopSound();
         // return mouseMove(evt)
@@ -142,14 +160,14 @@ class App extends Component {
     const mouseMove = (evt) => {
         //pick(evt) returns an rgba tuple, scale changes it to a frequency, and play plays that frequency
         playSound(scaleToFrequency(pick(evt)))
-        console.log("In Mouse Move")
+        // console.log("In Mouse Move")
         //compose(play(), scale(), pick(evt))
         if (self.state.isMajor){
           playSound(scaleToFrequency(pick(evt)), 5/4)
-          console.log('isMajor')
+          // console.log('isMajor')
         }
         else{
-          console.log('isMinnor')
+          // console.log('isMinnor')
           playSound(scaleToFrequency(pick(evt)), 6/5)
         }
     }
@@ -157,34 +175,78 @@ class App extends Component {
     const mouseOut = (event) => {
       if (event.type === 'mouseout') return stopSound();
       return mouseMove(event)
-      console.log("In Mouse Down")
+      // console.log("In Mouse Down")
     }
 
     //event handlers
     this.refs.canvas.addEventListener('mousedown', (event) => mouseDown(event)) // Click on picture
     this.refs.canvas.addEventListener('mouseout', (event) => mouseOut(event)) // Not in picutre
     this.refs.canvas.addEventListener('mousemove', (event) => mouseMove(event)) // Moving in picture
+
+    //----------------------------------------------------------------------------------------------//
+    //                                           Chart                                              //
+    //----------------------------------------------------------------------------------------------//
+
+
   }
 
   render() {
     // console.log(this.state.imageHeight, this.state.imageWidth)
-    const { imageWidth, imageHeight, rgba, isMajor, isMinnor } = this.state;
+    const { imageWidth, imageHeight, rgba, isMajor, isMinnor, pixelCounter } = this.state;
 
-    console.log(imageWidth, imageHeight)
+    console.log(this.state.xAxis)
+    // console.log(imageWidth, imageHeight)
     return (
       <div>
-        <div className='custom-picture-container'>
-          <div className='left'>
-            <canvas ref="canvas" width={imageWidth === 0 ? 0 : imageWidth} height={imageHeight === 0 ? 0 : imageHeight}/>
-          </div>
-          <div className='right' >
-            <div style={{ width: imageWidth === 0 ? `${0}px` : imageWidth, height: imageHeight === 0 ? `${0/2}px` : imageHeight/2, backgroundColor: rgba }}>
-              {this.state.rgba}
+          <div className='custom-title-container'>Hilbert Project</div>
+
+          <div className='custom-picture-container'>
+            <div className='left'>
+              <canvas ref="canvas" width={imageWidth === 0 ? 0 : imageWidth} height={imageHeight === 0 ? 0 : imageHeight}/>
             </div>
-            <Checkbox checked={isMajor} onClick={() => this.setState({ isMajor: (isMajor ? false : true)})} label='Major' type='radio' />
-            <Checkbox checked={!isMajor} onClick={() => this.setState({ isMajor: !isMajor ? true : false })} label='Minnor' type='radio' />
+            <div className='right' >
+              <div className='right-top-item' style={{ width: imageWidth === 0 ? `${0}px` : imageWidth, height: imageHeight === 0 ? `${0/2}px` : imageHeight/2, backgroundColor: rgba }}>
+                {this.state.rgba}
+              </div>
+              <div className='right-bottom-item' style={{ border: `1px solid ${rgba}`}}>
+                <div className='item-left'>
+                  <Checkbox checked={isMajor} onClick={() => this.setState({ isMajor: (isMajor ? false : true)})} label='Major' type='radio' />
+                </div>
+
+                <div className='item-right'>
+                  <Checkbox checked={!isMajor} onClick={() => this.setState({ isMajor: !isMajor ? true : false })} label='Minnor' type='radio' />
+                </div>
+              </div>
+              
+            </div>
           </div>
-        </div>
+          
+          <Line data={{
+                labels: this.state.xAxis,
+                datasets: [
+                  {
+                    label: 'Frequency Waveforms',
+                    fill: false,
+                    lineTension: 0.1,
+                    backgroundColor: 'rgba(75,192,192,0.4)',
+                    borderColor: rgba, //'rgba(75,192,192,1)',
+                    borderCapStyle: 'butt',
+                    borderDash: [],
+                    borderDashOffset: 0.0,
+                    borderJoinStyle: 'miter',
+                    pointBorderColor:  rgba, //'rgba(75,192,192,1)',
+                    pointBackgroundColor: '#fff',
+                    pointBorderWidth: 1,
+                    pointHoverRadius: 5,
+                    pointHoverBackgroundColor: 'rgba(75,192,192,1)',
+                    pointHoverBorderColor: 'rgba(220,220,220,1)',
+                    pointHoverBorderWidth: 2,
+                    pointRadius: 1,
+                    pointHitRadius: 10,
+                    data: this.state.yAxis
+                  }
+                ]
+              }} />
       </div>
     );
   }
