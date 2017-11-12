@@ -11,6 +11,8 @@ import './styles/app.css'
 
 
 const img = new Image();
+// img.crossOrigin = 'anonymous';    
+// img.src = mountain;
 
 // These are solutions
 // Problems:
@@ -29,21 +31,20 @@ class App extends Component {
   constructor(props) {
     super(props);
 
-    this.state = { arrayOfPixels: [], imageHeight: 300, imageWidth: 300, rgba: 'rgba(0, 0, 0, 0)' };
+    this.state = { arrayOfPixels: [], imageHeight: 0, imageWidth: 0, rgba: 'rgba(0, 0, 0, 0)' };
   }
   
   componentWillMount() {
     img.crossOrigin = 'anonymous';    
     img.src = mountain;
-
-    this.setState({ imageHeight: img.height, imageWidth: img.width, isMajor: true, isMinnor: false })
   }
 
-  componentDidMount() {
+  componentDidMount() {    
     const self = this;    
     const ctx = this.refs.canvas.getContext('2d');
     // important need or else it won't work. 
     img.onload = () => {
+      this.setState({ imageHeight: img.height, imageWidth: img.width, isMajor: true, isMinnor: false })
       ctx.drawImage(img, 0, 0);
       img.style.display = 'none';
     }
@@ -174,10 +175,10 @@ class App extends Component {
       <div>
         <div className='custom-picture-container'>
           <div className='left'>
-            <canvas ref="canvas" width={imageWidth === 0 ? `300` : imageWidth} height={imageHeight === 0 ? `300` : imageHeight}/>
+            <canvas ref="canvas" width={imageWidth === 0 ? 0 : imageWidth} height={imageHeight === 0 ? 0 : imageHeight}/>
           </div>
           <div className='right' >
-            <div style={{ width: imageWidth === 0 ? `${300}px` : imageWidth, height: imageHeight === 0 ? `${300/2}px` : imageHeight/2, backgroundColor: rgba }}>
+            <div style={{ width: imageWidth === 0 ? `${0}px` : imageWidth, height: imageHeight === 0 ? `${0/2}px` : imageHeight/2, backgroundColor: rgba }}>
               {this.state.rgba}
             </div>
             <Checkbox checked={isMajor} onClick={() => this.setState({ isMajor: (isMajor ? false : true)})} label='Major' type='radio' />
