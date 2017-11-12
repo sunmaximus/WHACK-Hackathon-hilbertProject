@@ -20,7 +20,6 @@ const img = new Image();
 // https://reactjs.org/docs/refs-and-the-dom.html
 /********************************************************************************************************************************/
 
-
 class App extends Component {
   constructor(props) {
     super(props);
@@ -43,9 +42,6 @@ class App extends Component {
       img.style.display = 'none';
     }
 
-
-    const self = this;
-
     const pick = (event) => {
       let x = event.layerX;
       let y = event.layerY;
@@ -54,22 +50,102 @@ class App extends Component {
       let rgba = `rgba(${data[0]}, ${data[1]}, ${data[2]}, ${(data[3] / 255)})`
 
       // self.setState({ arrayOfPixels: [...self.state.arrayOfPixels, [ data[0], data[1], data[2], (data[3] / 255)] ] })
-      console.log(rgba)
+      console.log([ data[0], data[1], data[2], (data[3] / 255) ])
+      return [data[0], data[1], data[2]]
+
+      // console.log(rgba)
     }
-    this.refs.canvas.addEventListener('mousemove', (event) => pick(event));
+    // this.refs.canvas.addEventListener('mousemove', (event) => pick(event));
+      //global variable soundOn, context, o 
+      var soundOn = false
+      var contexts = []
+      var oscillators = []
+     // var gains = []
+     /* var pianoGains = [1.0, 0.399064778, 0.229404484, 0.151836061,
+                      0.196754229, 0.093742264, 0.060871957,
+                      0.138605419, 0.010535002, 0.071021868,
+                      0.029954614, 0.051299684, 0.055948288,
+                      0.066208224, 0.010067391, 0.00753679,
+                      0.008196947, 0.012955577, 0.007316738,
+                      0.006216476, 0.005116215, 0.006243983,
+                      0.002860679, 0.002558108, 0.0, 0.001650392]*/
+      
+      for (let i = 0; i < 3; i++){
+          contexts[i] = new AudioContext()
+      }
+      for (let i = 0; i < 3; i++){
+          oscillators[i] = contexts[i].createOscillator('sine')
+          oscillators[i].connect(contexts[i].destination)
+          oscillators[i].start()
+          contexts[i].suspend()
+          //gains[i] = contexts[i].createGain()
+          //gains[i].connect(contexts[i].destination);
+      }
+      //o.type = "sine"
+      
+      //returns a frequency between 200 and 800 Hz, and takes an rgba tuple/list/array
+        function scaleToFrequency(rgba){
+          var multipliedTotal = rgba[0] * rgba[1] * rgba[2]
+          return (multipliedTotal/(255*255*255))*600 + 200 
+      }
+      
+      //takes a frequency and plays a sound, returns the AudioContext() object so that it can be stopped later
+      function playSound(frequency){
+          /*for (i = 0; i < 6; i++){
+              oscillators[i].frequency.value = frequency*(i+1)
+              gains[i].gain.value = pianoGains[i]
+              oscillators[i].start()
+          }*/
+          oscillators[0].frequency.value = frequency
+          oscillators[1].frequency.value = frequency*5/4
+          oscillators[2].frequency.value = frequency*3/2
+
+          contexts[0].resume()
+          contexts[1].resume()
+          contexts[2].resume()
+      }
+      
+      function stopSound(){
+        for (let i = 0; i < 3; i++){
+            contexts[i].suspend()
+
+//            oscillators[i] = contexts[i].createOscillator('sine')
+//            oscillators[i].connect(contexts[i].destination)
+            
+        }
+    }
+      
+      function mouseDown(evt){
+          //toggle soundOn 
+          soundOn = (soundOn) ? false : true;
+          if (soundOn){
+              mouseMove(evt)
+          }
+          else{
+              stopSound()
+          }
+          console.log("In Mouse Down")
+          
+      }
+      
+      
+      function mouseMove(evt){
+          //pick(evt) returns an rgba tuple, scale changes it to a frequency, and play plays that frequency
+          playSound(scaleToFrequency(pick(evt)))
+          console.log("In Mouse Move")
+          //compose(play(), scale(), pick(evt))
+      }
+      
+      
+      //event handlers
+      this.refs.canvas.addEventListener('mousedown', (event) => mouseDown(event))
+      this.refs.canvas.addEventListener('mousemove', (event) => mouseMove(event))
   }
 
   render() {
-    console.log(this.state.imageHeight, this.state.imageWidth)
+    // console.log(this.state.imageHeight, this.state.imageWidth)
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React</h1>
-        </header>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
+      <div>
         <div style={{ display: 'place', justifyContent: 'center', alignItems: 'center'}}>
           <canvas ref="canvas" width={this.state.imageWidth} height={this.state.imageHeight} style={{ border: '2px solid blue' }}/>
         </div>
