@@ -40,7 +40,7 @@ class App extends Component {
       imageWidth: 0, 
       rgba: 'rgb(73, 104, 172)',
       pixelCounter: 0,
-      xAxis: Array.apply(null, Array(360)).map(function (_, i) {return i*3.14/180;}),
+      xAxis: Array.apply(null, Array(180)).map(function (_, i) {return i*3.14/180;}),
       yAxis: []
     };
   }
