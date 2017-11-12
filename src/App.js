@@ -35,7 +35,7 @@ class App extends Component {
       arrayOfPixels: [], 
       imageHeight: 0, 
       imageWidth: 0, 
-      rgba: 'rgba(0, 0, 0, 0)',
+      rgba: 'rgb(73, 104, 172)',
       pixelCounter: 0,
       xAxis: Array.apply(null, Array(180)).map(function (_, i) {return i*3.14/180;}),
       yAxis: []
@@ -217,10 +217,9 @@ class App extends Component {
                   <Checkbox checked={!isMajor} onClick={() => this.setState({ isMajor: !isMajor ? true : false })} label='Minnor' type='radio' />
                 </div>
               </div>
-              
             </div>
           </div>
-          
+
           <Line data={{
                 labels: this.state.xAxis,
                 datasets: [
@@ -247,6 +246,7 @@ class App extends Component {
                   }
                 ]
               }} />
+
       </div>
     );
   }
