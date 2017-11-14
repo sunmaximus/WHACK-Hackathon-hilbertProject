@@ -30,6 +30,21 @@
         }
         
         }
+        
+        //takes a frequency and plays a sound, returns the AudioContext() object so that it can be stopped later
+        function frequencyToSound(frequency){
+            var context = new AudioContext()
+            var o = context.createOscillator()
+            o.frequency.value = frequency
+            o.type = "sine"
+            o.connect(context.destination)
+            o.start()
+            return context
+        }
+        
+        function stopSound(oscillator){
+            oscillator.close()
+        }
     </script>
     
     </head>
