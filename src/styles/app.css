@@ -3,7 +3,6 @@ div.custom-picture-container {
   flex-direction: row;
   width: 100%;
   justify-content: center;
-  margin-top: 60px;
 }
 
 div.custom-picture-container .right {

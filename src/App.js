@@ -1,14 +1,17 @@
 import React, { Component } from 'react';
-import cat from './cat.svg';
+import cat from './cat.jpg';
 import mountain from './ll.jpg';
 import red from './red.jpg';
+import ocean from './ocean.png';
+import pink from './pink.png';
+
+
 import { Checkbox, Container } from 'semantic-ui-react'
 import { Line } from 'react-chartjs-2';
 
 // import Chart from 'chart.js';
 
 import './styles/app.css'
-
 
 const img = new Image();
 // img.crossOrigin = 'anonymous';    
@@ -44,7 +47,11 @@ class App extends Component {
   
   componentWillMount() {
     img.crossOrigin = 'anonymous';    
-    img.src = mountain;
+     //img.src = mountain;
+    // img.src = red;
+    // img.src = ocean;
+    img.src = pink;
+    // img.src = cat;
   }
 
   componentDidMount() {    
@@ -52,6 +59,7 @@ class App extends Component {
     const ctx = this.refs.canvas.getContext('2d');
     // important need or else it won't work. 
     img.onload = () => {
+      
       this.setState({ imageHeight: img.height, imageWidth: img.width, isMajor: true, isMinnor: false })
       ctx.drawImage(img, 0, 0);
       img.style.display = 'none';
@@ -199,7 +207,7 @@ class App extends Component {
     return (
       <div>
           <div className='custom-title-container'>Hilbert Project</div>
-
+          
           <div className='custom-picture-container'>
             <div className='left'>
               <canvas ref="canvas" width={imageWidth === 0 ? 0 : imageWidth} height={imageHeight === 0 ? 0 : imageHeight}/>
@@ -209,18 +217,50 @@ class App extends Component {
                 {this.state.rgba}
               </div>
               <div className='right-bottom-item' style={{ border: `1px solid ${rgba}`}}>
-                <div className='item-left'>
+               
+                {/* <div className='item-left'>
                   <Checkbox checked={isMajor} onClick={() => this.setState({ isMajor: (isMajor ? false : true)})} label='Major' type='radio' />
                 </div>
 
                 <div className='item-right'>
                   <Checkbox checked={!isMajor} onClick={() => this.setState({ isMajor: !isMajor ? true : false })} label='Minnor' type='radio' />
-                </div>
+                </div> */}
+
+                <Line data={{
+                      labels: this.state.xAxis,
+                      datasets: [
+                        {
+                          label: '', //'Frequency Waveforms',
+                          fill: false,
+                          lineTension: 0.1,
+                          backgroundColor: 'rgba(75,192,192,0.4)',
+                          borderColor: rgba, //'rgba(75,192,192,1)',
+                          borderCapStyle: 'butt',
+                          borderDash: [],
+                          borderDashOffset: 0.0,
+                          borderJoinStyle: 'miter',
+                          pointBorderColor:  rgba, //'rgba(75,192,192,1)',
+                          pointBackgroundColor: '#fff',
+                          pointBorderWidth: 1,
+                          pointHoverRadius: 5,
+                          pointHoverBackgroundColor: 'rgba(75,192,192,1)',
+                          pointHoverBorderColor: 'rgba(220,220,220,1)',
+                          pointHoverBorderWidth: 2,
+                          pointRadius: 1,
+                          pointHitRadius: 10,
+                          data: this.state.yAxis
+                        },
+                      ]
+                    }} 
+                    
+                    height={125}
+                    />
+
               </div>
             </div>
           </div>
 
-          <Line data={{
+          {/* <Line data={{
                 labels: this.state.xAxis,
                 datasets: [
                   {
@@ -245,7 +285,7 @@ class App extends Component {
                     data: this.state.yAxis
                   }
                 ]
-              }} />
+              }} /> */}
 
       </div>
     );
