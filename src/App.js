@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import cat from './cat.jpg';
 import mountain from './ll.jpg';
 import red from './red.jpg';
-import ocean from './ocean.png';
-import pink from './pink.png';
+// import ocean from './ocean.png';
+import pink from './pink.jpg';
 
 
 import { Checkbox, Container } from 'semantic-ui-react'
@@ -47,10 +47,10 @@ class App extends Component {
   
   componentWillMount() {
     img.crossOrigin = 'anonymous';    
-     //img.src = mountain;
+     img.src = mountain;
     // img.src = red;
     // img.src = ocean;
-    img.src = pink;
+    // img.src = pink;
     // img.src = cat;
   }
 
