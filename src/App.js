@@ -3,7 +3,7 @@ import cat from './cat.jpg';
 import mountain from './ll.jpg';
 import red from './red.jpg';
 // import ocean from './ocean.png';
-import pink from './pink.jpg';
+import pink from './pink.png';
 
 
 import { Checkbox, Container } from 'semantic-ui-react'
@@ -47,21 +47,32 @@ class App extends Component {
   
   componentWillMount() {
     img.crossOrigin = 'anonymous';    
-     img.src = mountain;
+    //  img.src = mountain;
     // img.src = red;
     // img.src = ocean;
-    // img.src = pink;
+    img.src = pink;
     // img.src = cat;
   }
 
   componentDidMount() {    
     const self = this;    
     const ctx = this.refs.canvas.getContext('2d');
-    // important need or else it won't work. 
+
+    // important need or else it won't work. img.onload()
+    // This link explain how to scale the canvas
+    // https://stackoverflow.com/questions/2303690/resizing-an-image-in-an-html5-canvas
     img.onload = () => {
-      
-      this.setState({ imageHeight: img.height, imageWidth: img.width, isMajor: true, isMinnor: false })
-      ctx.drawImage(img, 0, 0);
+      this.refs.canvas.width = img.width * .8
+      this.refs.canvas.height = img.height * .8
+
+      this.setState({ 
+        imageHeight: img.height * .8, 
+        imageWidth: img.width * .8, 
+        isMajor: true, 
+        isMinnor: false 
+      })
+
+      ctx.drawImage(img, 0, 0, this.refs.canvas.width, this.refs.canvas.height);
       img.style.display = 'none';
     }
 
@@ -209,7 +220,7 @@ class App extends Component {
           <div className='custom-title-container'>Hilbert Project</div>
           
           <div className='custom-picture-container'>
-            <div className='left'>
+            <div className='left' >
               <canvas ref="canvas" width={imageWidth === 0 ? 0 : imageWidth} height={imageHeight === 0 ? 0 : imageHeight}/>
             </div>
             <div className='right' >
@@ -254,6 +265,7 @@ class App extends Component {
                     }} 
                     
                     height={125}
+                    // width={300}
                     />
 
               </div>
