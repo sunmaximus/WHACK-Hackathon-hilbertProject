@@ -7,3 +7,8 @@ Applications and Consequences: Apart from the concept of connecting our senses a
 Libraries that need to be leveraged:
 - Convert an image into an array of pixels with RGB values.
 - Given a frequency, play a sound matching that frequency.
+
+## Instructions
+Change directory project
+run `npm i` or `yarn`
+After run `npm run start` or `yarn start`
